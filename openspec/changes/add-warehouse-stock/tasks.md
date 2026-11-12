@@ -19,10 +19,10 @@
 
 ## 3. Product catalog (`specs/product-catalog`)
 
-- [ ] 3.1 Add Zod schemas for create, update and list-filter of products, with unit tests for valid input and each invalid field
-- [ ] 3.2 Implement `ProductsService` (create, list with turnover filter, get, update, delete) including the SKU uniqueness, "no turnover change with stock" and "no delete with stock or movements" rules, and verify unit tests with mocked repositories cover each rule and status
-- [ ] 3.3 Implement `ProductsController` and `ProductsModule` under `/products`, register the module in `AppModule`, and verify e2e tests cover every scenario in `specs/product-catalog/spec.md` that does not need stock
-- [ ] 3.4 Document the product endpoints in `README.md` with one example request each, and verify the examples run against `pnpm start:dev`
+- [x] 3.1 Add Zod schemas for create, update and list-filter of products, with unit tests for valid input and each invalid field
+- [x] 3.2 Implement `ProductsService` (create, list with turnover filter, get, update, delete) including the SKU uniqueness, "no turnover change with stock" and "no delete with stock or movements" rules, and verify unit tests with mocked repositories cover each rule and status
+- [x] 3.3 Implement `ProductsController` and `ProductsModule` under `/products`, register the module in `AppModule`, and verify e2e tests cover every scenario in `specs/product-catalog/spec.md` that does not need stock
+- [x] 3.4 Document the product endpoints in `README.md` with one example request each, and verify the examples run against `pnpm start:dev`
 
 ## 4. Warehouse layout (`specs/warehouse-layout`)
 

@@ -63,6 +63,54 @@ $ pnpm migration:generate src/database/migrations/<Name>
 
 After generating a migration, review it and add its class to `src/database/migrations/index.ts`.
 
+## API
+
+All request bodies and query strings are validated. Invalid input returns `400` with a `message` array whose entries start with the field name, for example `"turnover: Invalid option: expected one of \"HIGH\"|\"MEDIUM\"|\"LOW\""`. Ids are UUIDs; a malformed id returns `400` and an unknown id returns `404`.
+
+### Products
+
+A product has a unique `sku`, a `name`, a `unit` of measure and a `turnover` class (`HIGH`, `MEDIUM` or `LOW`).
+
+| Method and path | Purpose | Success | Errors |
+| --- | --- | --- | --- |
+| `POST /products` | Create a product | `201` | `400`, `409` duplicate SKU |
+| `GET /products?turnover=` | List products, optionally by turnover | `200` | `400` |
+| `GET /products/:id` | Read a product | `200` | `404` |
+| `PATCH /products/:id` | Change `sku`, `name`, `unit` or `turnover` | `200` | `404`, `409` duplicate SKU or turnover change while the product has stock |
+| `DELETE /products/:id` | Delete a product | `204` | `404`, `409` product has stock or recorded movements |
+
+```bash
+# create
+curl -s -X POST localhost:3000/products -H 'Content-Type: application/json' \
+  -d '{"sku":"CHEM-0001","name":"Sodium hydroxide 25kg","unit":"BAG","turnover":"HIGH"}'
+
+# list, filtered by turnover
+curl -s 'localhost:3000/products?turnover=HIGH'
+
+# read
+curl -s localhost:3000/products/<productId>
+
+# update
+curl -s -X PATCH localhost:3000/products/<productId> -H 'Content-Type: application/json' \
+  -d '{"name":"Caustic soda 25kg"}'
+
+# delete
+curl -s -X DELETE -o /dev/null -w '%{http_code}\n' localhost:3000/products/<productId>
+```
+
+## Compile and run the project
+
+```bash
+# development
+$ pnpm run start
+
+# watch mode
+$ pnpm run start:dev
+
+# production mode
+$ pnpm run start:prod
+```
+
 ## Run tests
 
 ```bash

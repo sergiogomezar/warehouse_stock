@@ -6,6 +6,7 @@ import { AppService } from './app.service.js';
 import { type Env, validate } from './config/env.js';
 import { basePostgresOptions } from './database/data-source-options.js';
 import { entities } from './database/entities.js';
+import { ProductsModule } from './products/products.module.js';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { entities } from './database/entities.js';
         autoLoadEntities: true,
       }),
     }),
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
