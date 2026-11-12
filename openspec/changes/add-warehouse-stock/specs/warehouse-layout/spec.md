@@ -117,14 +117,19 @@ The system SHALL let a client change a shelf's code, zone and capacity. The zone
 - **THEN** the system returns status 409 and the capacity does not change
 
 ### Requirement: Delete a shelf
-The system SHALL let a client delete a shelf only when it holds no stock.
+The system SHALL let a client delete a shelf only when it holds no stock and no recorded movement names it as source or target, so the movement history stays complete.
 
-#### Scenario: Delete empty shelf
-- **GIVEN** shelf `A-01` holds no stock
+#### Scenario: Delete unused shelf
+- **GIVEN** shelf `A-01` holds no stock and has no movements
 - **WHEN** a client deletes it
 - **THEN** the system returns status 204
 
 #### Scenario: Delete shelf with stock
 - **GIVEN** shelf `A-01` holds stock
+- **WHEN** a client deletes it
+- **THEN** the system returns status 409 and the shelf still exists
+
+#### Scenario: Delete emptied shelf with history
+- **GIVEN** shelf `A-01` received stock that was later fully withdrawn
 - **WHEN** a client deletes it
 - **THEN** the system returns status 409 and the shelf still exists

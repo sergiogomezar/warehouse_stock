@@ -50,7 +50,7 @@ Alternative considered: `forwardRef` between modules. Rejected because circular 
 - `@nestjs/typeorm` + `typeorm` + `pg`, configured with `TypeOrmModule.forRootAsync` reading from `ConfigService`.
 - One `DATABASE_URL` environment variable, validated at startup by a Zod schema in `ConfigModule.forRoot({ validate })`.
 - `synchronize: false`. The schema is created by TypeORM migrations, run with the TypeORM CLI against `src/database/data-source.ts`. Migrations cannot use Nest DI, so `data-source.ts` reads `process.env` directly.
-- `autoLoadEntities: true`; every entity is registered through `forFeature`, so none is missed.
+- `autoLoadEntities: true`; every entity is registered through `forFeature`, so none is missed. The app also passes the shared entity list from `src/database/entities.ts` (the same list the migration CLI uses), so relation targets owned by a module that is not imported are still known.
 
 Tables (UUID primary keys, `created_at` / `updated_at` where useful):
 
@@ -63,6 +63,8 @@ Tables (UUID primary keys, `created_at` / `updated_at` where useful):
 | `stock_movements` | `type` enum (`RECEIVE`, `WITHDRAW`, `TRANSFER`), `product_id` FK, `from_shelf_id` / `to_shelf_id` nullable FK, `quantity` int `CHECK > 0`, `note` nullable, `created_at`; indexes on `product_id`, `from_shelf_id`, `to_shelf_id`, `created_at` |
 
 A `stock_items` row is deleted when its quantity reaches zero, which gives "zero entries do not appear" without filtering. `stock_movements` also has a `CHECK` that the shelf columns match the type (receive: only `to`; withdraw: only `from`; transfer: both, different).
+
+All foreign keys of `stock_movements` use `RESTRICT`, so history is never orphaned. A product or shelf named by any movement cannot be deleted: the service checks this first and returns 409, and the FK is the backstop.
 
 Used units of a shelf are computed with `SUM(quantity)` over `stock_items`, not stored on the shelf. Alternative considered: a denormalized `used_units` column on `shelves`. Rejected for now: one more value to keep in sync, and the sum is cheap with the composite primary key.
 

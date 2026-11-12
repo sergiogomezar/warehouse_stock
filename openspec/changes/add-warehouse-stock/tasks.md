@@ -2,20 +2,20 @@
 
 ## 1. Setup: dependencies, config and database
 
-- [ ] 1.1 Add `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config` and `zod` with pnpm, and verify `pnpm install` and `pnpm build` succeed
-- [ ] 1.2 Add `docker-compose.yml` with a `postgres` service and `.env.example` with `DATABASE_URL` and `TEST_DATABASE_URL`, and verify `docker compose up -d` starts a database that accepts connections
-- [ ] 1.3 Add `src/config/env.ts` (Zod schema for env vars) and register `ConfigModule.forRoot({ isGlobal: true, validate })` in `AppModule`, and verify the app fails fast with a clear message when `DATABASE_URL` is missing
-- [ ] 1.4 Register `TypeOrmModule.forRootAsync` (`synchronize: false`, `autoLoadEntities: true`) from `ConfigService`, and verify `pnpm start:dev` connects to the local database
-- [ ] 1.5 Register the global `StandardSchemaValidationPipe` in `src/main.ts`, and verify the existing `GET /` e2e test still passes
-- [ ] 1.6 Add `src/database/data-source.ts` and `migration:generate` / `migration:run` / `migration:revert` scripts in `package.json`, and verify `pnpm migration:run` runs with no migrations and exits 0
-- [ ] 1.7 Add an e2e helper in `test/` that builds the app with the same global pipe, runs migrations against `TEST_DATABASE_URL` and truncates tables between tests, and verify `pnpm test:e2e` passes
+- [x] 1.1 Add `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config` and `zod` with pnpm, and verify `pnpm install` and `pnpm build` succeed
+- [x] 1.2 Add `docker-compose.yml` with a `postgres` service and `.env.example` with `DATABASE_URL` and `TEST_DATABASE_URL`, and verify `docker compose up -d` starts a database that accepts connections
+- [x] 1.3 Add `src/config/env.ts` (Zod schema for env vars) and register `ConfigModule.forRoot({ isGlobal: true, validate })` in `AppModule`, and verify the app fails fast with a clear message when `DATABASE_URL` is missing
+- [x] 1.4 Register `TypeOrmModule.forRootAsync` (`synchronize: false`, `autoLoadEntities: true`) from `ConfigService`, and verify `pnpm start:dev` connects to the local database
+- [x] 1.5 Register the global `StandardSchemaValidationPipe` in `src/main.ts`, and verify the existing `GET /` e2e test still passes
+- [x] 1.6 Add `src/database/data-source.ts` and `migration:generate` / `migration:run` / `migration:revert` scripts in `package.json`, and verify `pnpm migration:run` runs with no migrations and exits 0
+- [x] 1.7 Add an e2e helper in `test/` that builds the app with the same global pipe, runs migrations against `TEST_DATABASE_URL` and truncates tables between tests, and verify `pnpm test:e2e` passes
 
 ## 2. Shared types and schema
 
-- [ ] 2.1 Add `src/common/turnover.ts` (enum and Zod schema for `HIGH`/`MEDIUM`/`LOW`) with a unit test that rejects other values
-- [ ] 2.2 Add `src/common/database-errors.ts` mapping Postgres `23505` and `23503` to `ConflictException`, with unit tests for both codes and for passing other errors through
-- [ ] 2.3 Add the `Warehouse`, `Shelf`, `Product`, `StockItem` and `StockMovement` entities with the columns, enums, FKs, unique and `CHECK` constraints from design.md, and verify `pnpm build` succeeds
-- [ ] 2.4 Generate the initial migration, review it for every constraint in design.md, and verify `pnpm migration:run` then `pnpm migration:revert` both succeed on an empty database
+- [x] 2.1 Add `src/common/turnover.ts` (enum and Zod schema for `HIGH`/`MEDIUM`/`LOW`) with a unit test that rejects other values
+- [x] 2.2 Add `src/common/database-errors.ts` mapping Postgres `23505` and `23503` to `ConflictException`, with unit tests for both codes and for passing other errors through
+- [x] 2.3 Add the `Warehouse`, `Shelf`, `Product`, `StockItem` and `StockMovement` entities with the columns, enums, FKs, unique and `CHECK` constraints from design.md, and verify `pnpm build` succeeds
+- [x] 2.4 Generate the initial migration, review it for every constraint in design.md, and verify `pnpm migration:run` then `pnpm migration:revert` both succeed on an empty database
 
 ## 3. Product catalog (`specs/product-catalog`)
 
@@ -28,7 +28,7 @@
 
 - [ ] 4.1 Add Zod schemas for warehouses and shelves (create, update, zone filter; capacity positive integer), with unit tests for valid input and each invalid field
 - [ ] 4.2 Implement `WarehousesService` (CRUD, code uniqueness, "no delete with shelves"), and verify unit tests cover each rule and status
-- [ ] 4.3 Implement `ShelvesService` (create in warehouse, list with zone filter, get with `usedUnits`/`freeUnits`, update, delete) including "no zone change with stock", "capacity not below used units" and "no delete with stock", locking the shelf row on update, and verify unit tests cover each rule and status
+- [ ] 4.3 Implement `ShelvesService` (create in warehouse, list with zone filter, get with `usedUnits`/`freeUnits`, update, delete) including "no zone change with stock", "capacity not below used units" and "no delete with stock or movements", locking the shelf row on update, and verify unit tests cover each rule and status
 - [ ] 4.4 Implement the controllers for `/warehouses`, `/warehouses/:id/shelves` and `/shelves/:id` and `WarehousesModule`, register it in `AppModule`, and verify e2e tests cover every scenario in `specs/warehouse-layout/spec.md` that does not need stock
 - [ ] 4.5 Document the warehouse and shelf endpoints in `README.md`, and verify the examples run against `pnpm start:dev`
 

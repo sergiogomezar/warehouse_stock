@@ -23,26 +23,45 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Stock management for a chemical products warehouse, built with [Nest](https://github.com/nestjs/nest): warehouses and their shelves, a product catalog, and the stock of each product on each shelf. A product's turnover class (`HIGH`, `MEDIUM`, `LOW`) decides which shelf zone it can be placed in.
 
 ## Project setup
 
 ```bash
 $ pnpm install
+
+# Start PostgreSQL (creates the warehouse_stock and warehouse_stock_test databases)
+$ docker compose up -d
+
+# Configure the connection, then create the schema
+$ cp .env.example .env
+$ pnpm migration:run
 ```
 
-## Compile and run the project
+Environment variables (see `.env.example`):
+
+| Variable | Used by | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | app, migration scripts | PostgreSQL connection URL. The app does not start without it. |
+| `TEST_DATABASE_URL` | `pnpm test:e2e` | Separate database for e2e tests. Its tables are emptied between tests. |
+| `PORT` | app | HTTP port, default `3000`. |
+
+## Database migrations
+
+The schema is created by TypeORM migrations only (`synchronize` is off). The scripts build the app first and run the CLI against `dist/database/data-source.js`.
 
 ```bash
-# development
-$ pnpm run start
+# apply pending migrations
+$ pnpm migration:run
 
-# watch mode
-$ pnpm run start:dev
+# undo the last migration
+$ pnpm migration:revert
 
-# production mode
-$ pnpm run start:prod
+# generate a migration from entity changes
+$ pnpm migration:generate src/database/migrations/<Name>
 ```
+
+After generating a migration, review it and add its class to `src/database/migrations/index.ts`.
 
 ## Run tests
 
